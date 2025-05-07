@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Binding of Isaac: Lista de personajes</title>
+  <!-- React & ReactDOM desde CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <!-- Babel para compilar JSX en el navegador -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
+  <!-- Tus estilos -->
+  <style>
+    .container { max-width: 600px; margin: 2rem auto; font-family: sans-serif; }
+    .search-box input { width: 100%; padding: 0.5rem; margin-bottom: 1rem; }
+    .add-user { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .add-user input { flex: 1; padding: 0.5rem; }
+    .add-user button { padding: 0.5rem 1rem; }
+    .user-list { list-style: none; padding: 0; }
+    .user-item { padding: 0.5rem 0; border-bottom: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Tu código React con JSX -->
+  <script type="text/babel">
+    const { useState, useMemo } = React;
+
+    function UserSearch() {
+      const [users, setUsers] = useState([
+        { name: 'Isaac',       description: 'El niño protagonista, que huye de los abusos de su madre dentro de su propia imaginación.' },
+        { name: 'Magdalene',   description: 'Representa a Isaac con pelo largo rubio; simboliza las tendencias travestis y la gula.' },
+        { name: 'Cain',        description: 'Isaac visto como un ladrón; solo dispara por su ojo derecho debido a un daño en el otro.' },
+        { name: 'Judas',       description: 'Versión de Isaac alejada de la gracia de Dios, simbolizando la traición.' },
+        { name: '??? (Blue Baby)', description: 'El alma de Isaac asfixiada dentro de un cofre; es una forma fantasmal.' },
+        { name: 'Eve',         description: 'Añadida en el Halloween Update; simboliza el pecado original como lo ve su madre.' },
+        { name: 'Samson',      description: 'Introducido en Wrath of the Lamb; personifica la fuerza de voluntad para vencer a sus demonios.' },
+        { name: 'Azazel',      description: 'Añadido en Rebirth; Isaac corrupto por el pecado, tiene vuelo y lágrimas de brimstone.' },
+        { name: 'Lazarus',     description: 'Referencia bíblica; posee una vida extra que recupera al cambiar de piso si muere.' },
+        { name: 'Eden',        description: 'Personificación del Jardín del Edén; inicia con objetos y estadísticas aleatorias.' },
+        { name: 'The Lost',    description: 'El espíritu de Isaac sin cuerpo; vuela y usa lágrimas espectrales pero muere con un solo golpe.' },
+        { name: 'Lilith',      description: 'Afterbirth DLC; no dispara por sí misma, depende de su familiar Incubus para atacar.' },
+        { name: 'The Keeper',  description: 'Afterbirth DLC; cadáver disecado de Isaac que solo se cura con monedas, dispara tres lágrimas a la vez.' },
+        { name: 'Apollyon',    description: 'Afterbirth+; encarna la plaga del Apocalipsis, comienza con el objeto Void.' },
+        { name: 'The Forgotten', description: 'Afterbirth+; cuerpo en descomposición y su alma separada, puede atacar cuerpo a cuerpo y a distancia.' },
+        { name: 'Bethany',     description: 'Repentance DLC; no puede recoger corazones especiales y usa Book of Virtues para invocar lágrimas.' },
+        { name: 'Jacob & Esau', description: 'Repentance DLC; juego dual con dos hermanos simultáneos; si uno muere, muere el otro.' }
+      ]);
+      const [search, setSearch] = useState('');
+      const [newUser, setNewUser] = useState({ name: '', description: '' });
+
+      const filtered = useMemo(() => {
+        return users.filter(u =>
+          u.name.toLowerCase().includes(search.toLowerCase()) ||
+          u.description.toLowerCase().includes(search.toLowerCase())
+        );
+      }, [search, users]);
+
+      const handleAdd = () => {
+        if (!newUser.name.trim()) return;
+        setUsers(prev => [...prev, newUser]);
+        setNewUser({ name: '', description: '' });
+      };
+
+      return (
+        <div className="container">
+          <h1>The Binding of Isaac: Lista de personajes</h1>
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Buscar por personaje o descripción 🔍"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+          </div>
+          <hr/>
+          <div className="add-user">
+            <input
+              type="text"
+              placeholder="Nombre"
+              value={newUser.name}
+              onChange={e => setNewUser(n => ({ ...n, name: e.target.value }))}
+            />
+            <input
+              type="text"
+              placeholder="Descripción"
+              value={newUser.description}
+              onChange={e => setNewUser(n => ({ ...n, description: e.target.value }))}
+            />
+            <button onClick={handleAdd}>Add User</button>
+          </div>
+          <hr/>
+          <ul className="user-list">
+            {filtered.map((u, i) => (
+              <li key={i} className="user-item">
+                <strong>{u.name}</strong>: {u.description}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+
+    function App() {
+      return <UserSearch />;
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
